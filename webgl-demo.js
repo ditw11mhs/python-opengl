@@ -6,7 +6,7 @@ main();
 // Start here
 //
 function main() {
-  const canvas = document.querySelector('#glcanvas');
+  const canvas = document.querySelector('#glcanvas2');
   const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
 
   // If we don't have a GL context, give up now
