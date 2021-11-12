@@ -2,7 +2,7 @@ import numpy as np
 import streamlit as st
 import streamlit.components.v1 as components
 from streamlit.logger import update_formatter
-
+from icecream import ic
 
 class SimulationUtils:
     def s(self, x):
@@ -22,6 +22,9 @@ class SimulationUtils:
 
     def cc(self, a, b):
         return self.c(a) * self.c(b)
+
+    def sq(self, x):
+        return x ** 2
 
     def info(self):
         return {
@@ -103,8 +106,8 @@ class SimulationUtils:
     def phi_2_dot_dot(self, step):
         return self.get_number(12, step)
 
-    def array_step(self, step):
-        return self.dynamic_array[:, step]
+    def update_array(self, row, value):
+        self.dynamic_array[row, self.step + 1] = value
 
 
 class Simulation(SimulationUtils):
@@ -158,7 +161,8 @@ class Simulation(SimulationUtils):
         sc = self.sc
         ss = self.ss
         cs = self.cs
-
+        sq = self.sq
+        
         m1 = self.m1
         m2 = self.m2
         l1 = self.l1
@@ -180,14 +184,14 @@ class Simulation(SimulationUtils):
         pdd2 = self.phi_2_dot_dot(self.step)
 
         upper = tdd2 * (m2 * l1 * l2p * (cc(t1, t2) * c(p1 - p2)) + ss(t1, t2))
-        +td2(
+        +td2*(
             m2 * l1 * l2p * (s(t1 + t2)) * (1 - c(p1 - p2))
             + td1 * sc(t1, t2) * c(p1 - p2)
             + pd1 * cc(t1, t2) * s(p1 - p2)
             - td1 * cc(t1, t2)
         )
         +pdd2 * (m2 * l1 * l2p * cs(t1, t2) * s(p1 - p2))
-        -(pd1 ** 2) * (sc(t1, t1) * (m1 * l1p ** 2 + m2 * l1 ** 2))
+        -(sq(pd1)) * (sc(t1, t1) * (m1 * sq(l1p) + m2 * sq(l1)))
         +pd2 * (
             m2
             * l1
@@ -199,24 +203,211 @@ class Simulation(SimulationUtils):
             )
         )
         +self.g * (m1 * l1p * s(t1) + m2 * l1 * s(t1))
-        # +pdd1 * (m2 * l1 * l2p * ss(t1, t2) * c(p1 - p2))
-        # +pd1 * (
-        #     m2
-        #     * l1
-        #     * l2p
-        #     * (
-        #         sc(t1 + t2, p1 - p2)
-        #         + pd2 * ss(t1, t2) * s(p2 - p1)
-        #         - td2 * ss(t1, t2) * c(p2 - p1)
-        #     )
-        # )
-        # +pd2(m2*l1*l2p)
+        # print(tdd2 * (m2 * l1 * l2p * (cc(t1, t2) * c(p1 - p2)) + ss(t1, t2)))
         up = self.tau_theta_1 - upper
-        down = m1 * l1p ** 2 + m2 * l1 ** 2 + self.inertia_1
+        down = m1 * sq(l1p) + m2 * sq(l1) + self.inertia_1
         return up / down
 
-    def runge_kutta_update(self, function):
-        pass
+    def theta_2_dot_dot_function(self, plus_y, plus_y_dot):
+        c = self.c
+        s = self.s
+        cc = self.cc
+        sc = self.sc
+        ss = self.ss
+        cs = self.cs
+        sq =self.sq
+        
+        m1 = self.m1
+        m2 = self.m2
+        l1 = self.l1
+        l1p = self.l1_p
+        l2 = self.l2
+        l2p = self.l2_p
+
+        t1 = self.theta_1(self.step)
+        t2 = self.theta_2(self.step) + plus_y
+        p1 = self.phi_1(self.step)
+        p2 = self.phi_2(self.step)
+        td1 = self.theta_1_dot(self.step)
+        td2 = self.theta_2_dot(self.step) + plus_y_dot
+        pd1 = self.phi_1_dot(self.step)
+        pd2 = self.phi_2_dot(self.step)
+        tdd1 = self.theta_1_dot_dot(self.step)
+        tdd2 = self.theta_2_dot_dot(self.step)
+        pdd1 = self.phi_1_dot_dot(self.step)
+        pdd2 = self.phi_2_dot_dot(self.step)
+
+        upper = tdd1 * (m2 * l1 * l2p * (cc(t1, t2) * c(p1 - p2) + ss(t1, t1)))
+        +td1 * (
+            m2 * l1 * l2p * (s(t1 + t2) * (1 - c(p1 - p2)))
+            + td2 * sc(t2, t1) * c(p1 - p2)
+            - pd2 * cc(t1, t2) * s(p1 - p2)
+            - td2 * sc(t1, t2)
+        )
+        -td2 * (m2 * l1 * l2p * sc(t1, t2) * s(p1 - p2))
+        +pdd1 * (-sc(t1, t2) * s(p1 - p2))
+        +pd2 * (-cs(t1 + t2, p1 - p2) - m2 * l1 * l2p * pd1 * sc(t1, t2) * c(p1 - p2))
+        +m2 * l2p * s(t2) * (self.g - 0 / 5 * l2p * sq(pd2) * c(t2))
+        up = self.tau_theta_2 - upper
+        down = m2 * sq(l2p) + self.inertia_2
+        return up / down
+
+    def phi_1_dot_dot_function(self, plus_y, plus_y_dot):
+        c = self.c
+        s = self.s
+        cc = self.cc
+        sc = self.sc
+        ss = self.ss
+        cs = self.cs
+        sq=self.sq
+
+        m1 = self.m1
+        m2 = self.m2
+        l1 = self.l1
+        l1p = self.l1_p
+        l2 = self.l2
+        l2p = self.l2_p
+
+        t1 = self.theta_1(self.step)
+        t2 = self.theta_2(self.step)
+        p1 = self.phi_1(self.step) + plus_y
+        p2 = self.phi_2(self.step)
+        td1 = self.theta_1_dot(self.step)
+        td2 = self.theta_2_dot(self.step)
+        pd1 = self.phi_1_dot(self.step) + plus_y_dot
+        pd2 = self.phi_2_dot(self.step)
+        tdd1 = self.theta_1_dot_dot(self.step)
+        tdd2 = self.theta_2_dot_dot(self.step)
+        pdd1 = self.phi_1_dot_dot(self.step)
+        pdd2 = self.phi_2_dot_dot(self.step)
+
+        upper = tdd2 * (-m2 * l1 * l2p * cs(t2, t1) * s(p1 - p2))
+        +td2*(
+            m2
+            * l1
+            * l2p
+            * (
+                -cs(t1 - t2, p1 - p2)
+                + td1 * cc(t1, t2) * s(p1 - p2)
+                + pd1 * sc(t1, t2) * c(p1 - p2)
+            )
+        )
+        +pd1 * (2 * m1 * sq(l1p) * sc(t1, t1) + 2 * m2 * sq(l1) * sc(t1, t2))
+        +pdd2 * (m2 * l1 * l2p * ss(t1, t2) * c(p1 - p2))
+        +pd2 * (
+            m2
+            * l1
+            * l2p*(
+                sc(t1 + t2, p1 - p2)
+                - td1 * cs(t1, t2) * c(p1 - p2)
+                + pd1 * ss(t1, t2) * s(p1 - p2)
+            )
+        )
+
+        up = self.tau_phi_1 - upper
+        down = m1 * sq(l1p) * sq(s(t1)) + m2 * sq(l1) * sq(s(t1))
+        return up / (down+10e-32)
+
+    def phi_2_dot_dot_function(self, plus_y, plus_y_dot):
+        c = self.c
+        s = self.s
+        cc = self.cc
+        sc = self.sc
+        ss = self.ss
+        cs = self.cs
+        sq = self.sq
+
+        m1 = self.m1
+        m2 = self.m2
+        l1 = self.l1
+        l1p = self.l1_p
+        l2 = self.l2
+        l2p = self.l2_p
+
+        t1 = self.theta_1(self.step)
+        t2 = self.theta_2(self.step)
+        p1 = self.phi_1(self.step)
+        p2 = self.phi_2(self.step) + plus_y
+        td1 = self.theta_1_dot(self.step)
+        td2 = self.theta_2_dot(self.step)
+        pd1 = self.phi_1_dot(self.step)
+        pd2 = self.phi_2_dot(self.step) + plus_y_dot
+        tdd1 = self.theta_1_dot_dot(self.step)
+        tdd2 = self.theta_2_dot_dot(self.step)
+        pdd1 = self.phi_1_dot_dot(self.step)
+        pdd2 = self.phi_2_dot_dot(self.step)
+
+        upper = tdd1 * (m2 * l1 * l2p * cs(t1, t2) * s(p1 - p2))
+        +td1 * (
+            m2
+            * l1
+            * l2p
+            * (
+                cs(t1 + t2, p1 - p2)
+                + td2 * cc(t1, t2) * s(p2 - p1)
+                + pd2 * cs(t1, t2) * c(p2 - p1)
+            )
+        )
+        +pdd1 * (m2 * l1 * l2p * ss(t1, t2) * c(p1 - p2))
+        +pd1 * (
+            m2
+            * l1
+            * l2p
+            * (
+                sc(t1 + t2, p1 - p2)
+                + pd2 * ss(t1, t2) * s(p2 - p1)
+                - td2 * sc(t1, t2) * c(p2 - p1)
+            )
+        )
+        +pd2 * (2 * m2 * sq(l2p) * sc(t2, t2))
+        
+        up = self.tau_phi_2 - upper
+        down = m2 * sq(l2p) * sq(s(t2))
+        
+        return up / (down+10e-32)
+
+    def runge_kutta(self, function, y, y_dot, row):
+        h =  self.dt
+        
+        self.dynamic_array[0, self.step] = self.dt*self.step
+        k1 = h / 2 * function(0, 0)
+        k2 = h / 2 * function(h / 2 * (y_dot + k1 / 2), k1)
+        k3 = h / 2 * function(h / 2 * (y_dot + k1 / 2), k2)
+        k4 = h / 2 * function(h * (y_dot + k3), 2 * k3)
+        # print(k4)
+        self.update_array(row, y + h * (y + (k1 + k2 + k3) / 3))
+        self.update_array(row + 4, y_dot + h * (k1 + 2 * k2 + 2 * k3 + k4))
+
+    def simulate(self):
+        for _ in range(self.dynamic_array.shape[1]-1):
+            self.runge_kutta(
+                self.theta_1_dot_dot_function,
+                self.theta_1(self.step),
+                self.theta_1_dot(self.step),
+                1,
+            )
+            self.runge_kutta(
+                self.theta_2_dot_dot_function,
+                self.theta_2(self.step),
+                self.theta_2_dot(self.step),
+                2,
+            )
+            self.runge_kutta(
+                self.phi_1_dot_dot_function,
+                self.phi_1(self.step),
+                self.phi_1_dot(self.step),
+                3,
+            )
+            self.runge_kutta(
+                self.phi_2_dot_dot_function,
+                self.phi_2(self.step),
+                self.phi_2_dot(self.step),
+                4,
+            )
+            self.step=self.step+1
+    
+    def plot(self):
+        st.plotly_chart(self.dynamic_array)
 
 
 class WebGL:

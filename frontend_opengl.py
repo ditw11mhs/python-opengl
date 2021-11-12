@@ -1,9 +1,243 @@
 import streamlit as st
+import streamlit.components.v1 as components
 from backend_opengl import *
 
 
 class Main:
     def main(self):
+    
+        st.markdown("# 3D Motion")
+        c1,c2 = st.columns(2)
+        camera_radius = c1.slider("Camera Radius", 0, 500,135)
+        camera_theta = c1.slider("Camera Theta", 0, 360,77)
+        camera_phi = c1.slider("Camera Phi", 0, 360,44)
+        # x_1&=l_{1p}sin{\theta_1}cos{\varphi_1}\\
+        #             y_1&=l_{1p}sin{\theta_1}sin{\varphi_1}\\
+        #             z_1 &= -l_{1p}cos{\theta_1}\\
+        H = c2.number_input("Height", 0, 220,160)
+        l1 =  0.186 * H
+        l2 = 0.146 * H
+        
+        components.html(
+            f"""
+            <canvas id="canvas" width = "640" height = "640"></canvas>
+         
+            
+            <script src="https://twgljs.org/dist/3.x/twgl-full.min.js"></script>
+            
+            <script>
+            const m4 = twgl.m4;
+            const v3 = twgl.v3;
+            const gl = document.querySelector("canvas").getContext("webgl");
+
+            const vs = `
+            attribute vec4 position;
+            attribute vec3 normal;
+
+            uniform mat4 u_projection;
+            uniform mat4 u_view;
+            uniform mat4 u_model;
+
+            varying vec3 v_normal;
+
+            void main() {{
+            gl_Position = u_projection * u_view * u_model * position;
+            v_normal = mat3(u_model) * normal; // better to use inverse-transpose-model
+            }}
+            `
+
+            const fs = `
+            precision mediump float;
+
+            varying vec3 v_normal;
+
+            uniform vec3 u_lightDir;
+            uniform vec3 u_color;
+
+            void main() {{
+            float light = dot(normalize(v_normal), u_lightDir) * .5 + .5;
+            gl_FragColor = vec4(u_color * light, 1);
+            }}
+            `;
+
+            // compiles shaders, links program, looks up attributes
+            const programInfo = twgl.createProgramInfo(gl, [vs, fs]);
+            // calls gl.createBuffer, gl.bindBuffer, gl.bufferData
+            
+            sphereRad =3;
+            
+            const cubeBufferInfo = twgl.primitives.createCubeBufferInfo(gl, 1);
+            const sphereBufferInfo = twgl.primitives.createSphereBufferInfo(gl,sphereRad,200,200);
+            const cylinderBufferInfo = twgl.primitives.createCylinderBufferInfo(gl,sphereRad/2,{l1}+2*sphereRad,200,200);
+            const truncatCylinderBufferInfo = twgl.primitives.createTruncatedConeBufferInfo(gl,sphereRad/3,sphereRad/2,{l2}+2*sphereRad,200,200); 
+            
+            r = {camera_radius};
+            theta_camera = {camera_theta}*Math.PI/180;
+            phi = {camera_phi}*Math.PI/180;
+            
+            x = r*Math.sin(theta_camera)*Math.cos(phi);
+            z = r*Math.sin(theta_camera)*Math.sin(phi);
+            y = -r*Math.cos(theta_camera);
+            
+            
+            const stack = [];
+
+            const color = [1, 1,1];
+            const lightDir = v3.normalize([x, y, z]);
+            
+            function render(time) {{
+            time *= 0.001;
+            
+            
+            console.log(theta_camera);
+            f_shoulder = 0.25;
+            
+            rotate_shoulder_x = 2*Math.abs(Math.sin(2*Math.PI*f_shoulder*time));
+            rotate_shoulder_y = 1*Math.abs(Math.sin(2*Math.PI*f_shoulder*time));
+            
+            twgl.resizeCanvasToDisplaySize(gl.canvas);
+            gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
+            
+            gl.enable(gl.DEPTH_TEST);
+            gl.enable(gl.CULL_FACE);
+            
+            gl.useProgram(programInfo.program);
+            
+            const fov = Math.PI * .25;
+            const aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
+            const zNear = 0.01;
+            const zFar = 1000;
+            const projection = m4.perspective(fov, aspect, zNear, zFar);
+            
+            const cameraPosition = [x, y, z];
+            const target = [0, -10, 0];
+            const up = [0, 1, 0];
+            const camera = m4.lookAt(cameraPosition, target, up);
+            
+            const view = m4.inverse(camera);
+            
+            
+            // make base position for shoulder
+            let m = m4.translation([0, 0, 0]);
+            pushMatrix(m);
+            {{
+                //Shoulder Sphere
+                m = m4.rotateX(m, rotate_shoulder_x);
+                m = m4.rotateY(m, rotate_shoulder_y);
+                drawSphere(projection, view, m);
+                pushMatrix(m);
+                {{
+                    // Upper Arm
+                    m = m4.translate(m, [0, -({l1}/2+sphereRad), 0]);
+                    drawCylinder(projection, view, m);
+                    
+                    pushMatrix(m);
+                    {{
+                    // Elbow
+                    m = m4.translate(m, [0, -({l1/2}+sphereRad), 0]);
+                    m = m4.rotateX(m, rotate_shoulder_y);
+                    
+                    drawSphere(projection, view, m);
+                    pushMatrix(m);
+                    {{
+                        // Lower Arm
+                        m = m4.translate(m, [0, -({l2/2}+sphereRad), 0]);
+                        drawCone(projection, view, m);
+                        pushMatrix(m);
+                        {{
+                            //Hand
+                            m = m4.translate(m, [0, -({l2/2}+sphereRad), 0]);
+                            drawSphere(projection, view, m);
+                            pushMatrix(m);
+                        }}
+                    }}
+                    }}
+                    
+                }}
+            
+                
+            
+                
+            }}
+            
+            m = popMatrix();
+
+            requestAnimationFrame(render);
+            }}
+            requestAnimationFrame(render);
+
+            function pushMatrix(m) {{
+            stack.push(m);
+            }}
+
+            function popMatrix() {{
+            return stack.pop();
+            }}
+
+            function drawCube(projection, view, model) {{
+            twgl.setBuffersAndAttributes(gl, programInfo, cubeBufferInfo);
+            twgl.setUniforms(programInfo, {{
+                u_color: color,
+                u_lightDir: lightDir,
+                u_projection: projection,
+                u_view: view,
+                u_model: model,
+            }});
+            
+            twgl.drawBufferInfo(gl, cubeBufferInfo);
+            }}
+            
+            function drawSphere(projection, view, model) {{
+            twgl.setBuffersAndAttributes(gl, programInfo, sphereBufferInfo);
+        
+            twgl.setUniforms(programInfo, {{
+                u_color: color,
+                u_lightDir: lightDir,
+                u_projection: projection,
+                u_view: view,
+                u_model: model,
+            }});
+          
+            twgl.drawBufferInfo(gl, sphereBufferInfo);
+            }}
+            
+            function drawCylinder(projection, view, model) {{
+            twgl.setBuffersAndAttributes(gl, programInfo, cylinderBufferInfo);
+        
+            twgl.setUniforms(programInfo, {{
+                u_color: color,
+                u_lightDir: lightDir,
+                u_projection: projection,
+                u_view: view,
+                u_model: model,
+            }});
+          
+            twgl.drawBufferInfo(gl, cylinderBufferInfo);
+            }}
+            
+            function drawCone(projection, view, model) {{
+            twgl.setBuffersAndAttributes(gl, programInfo, truncatCylinderBufferInfo);
+        
+            twgl.setUniforms(programInfo, {{
+                u_color: color,
+                u_lightDir: lightDir,
+                u_projection: projection,
+                u_view: view,
+                u_model: model,
+            }});
+          
+            twgl.drawBufferInfo(gl, truncatCylinderBufferInfo);
+            }}
+            
+            
+            </script>
+            
+            """,
+            width = 640,
+            height = 640
+        )
+        
+    def unuse(self):
         with st.expander("3D Motion Equation"):
             st.markdown("# 3D Motion Equation")
             st.markdown(
@@ -526,8 +760,8 @@ class Main:
         c1, c2, c3, c4 = st.columns(4)
         H = c1.number_input("Height (cm)", value=160)
         M = c2.number_input("Mass (kg)", value=60)
-        dt = c3.number_input("Time step (s)", value=0.001)
-        duration = c4.number_input("Duration (s)", value=5)
+        dt = c3.number_input("Time step (s)", value=0.1)
+        duration = c4.number_input("Duration (s)", value=1)
 
         theta_1 = c1.number_input("Upper Arm Angle Theta (deg)", value=0)
         theta_2 = c2.number_input("Lower Arm Angle Theta (deg)", value=0)
@@ -573,9 +807,11 @@ class Main:
         }
         debug = st.checkbox("Debug")
         motion_simulation = Simulation(simulation_input)
+        if st.button("Run Simulation"):
+            motion_simulation.simulate()
+            st.write(motion_simulation.dynamic_array)
+            motion_simulation.plot()
         if debug:
             st.write(motion_simulation.info())
-
-
 if __name__ == "__main__":
     Main().main()
