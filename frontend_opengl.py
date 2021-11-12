@@ -44,7 +44,7 @@ class Main:
                 "Lower Arm Y Angle",
             ],
         )
-        
+        st.video("video1366604507.mp4")
         components.html(
             f"""
             <canvas id="canvas" width = "640" height = "640"></canvas>
