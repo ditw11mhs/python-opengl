@@ -8,7 +8,7 @@ from backend_opengl import *
 
 class Main:
     def main(self):
-
+        
         st.markdown("# 3D Motion")
         camera_radius = st.sidebar.slider("Camera Radius", 0, 500, 135)
         camera_theta = st.sidebar.slider("Camera Theta", 0, 360, 77)
@@ -869,4 +869,5 @@ class Main:
 
 
 if __name__ == "__main__":
+    st.set_page_config(page_title="Motion Simulation", page_icon="🤖")
     Main().main()
