@@ -1,22 +1,49 @@
 import streamlit as st
 import streamlit.components.v1 as components
+import numpy as np
+from pandas import DataFrame as df
+import plotly.express as px
 from backend_opengl import *
 
 
 class Main:
     def main(self):
-    
+
         st.markdown("# 3D Motion")
-        c1,c2 = st.columns(2)
-        camera_radius = c1.slider("Camera Radius", 0, 500,135)
-        camera_theta = c1.slider("Camera Theta", 0, 360,77)
-        camera_phi = c1.slider("Camera Phi", 0, 360,44)
-        # x_1&=l_{1p}sin{\theta_1}cos{\varphi_1}\\
-        #             y_1&=l_{1p}sin{\theta_1}sin{\varphi_1}\\
-        #             z_1 &= -l_{1p}cos{\theta_1}\\
-        H = c2.number_input("Height", 0, 220,160)
-        l1 =  0.186 * H
+        camera_radius = st.sidebar.slider("Camera Radius", 0, 500, 135)
+        camera_theta = st.sidebar.slider("Camera Theta", 0, 360, 77)
+        camera_phi = st.sidebar.slider("Camera Phi", 0, 360, 44)
+        H = st.sidebar.number_input("Height", 0, 220, 160)
+        l1 = 0.186 * H
         l2 = 0.146 * H
+
+        time = np.arange(0, 5, 0.001)
+        f_shoulder = 0.25
+        f_elbow = 0.25
+        angle_x_shoulder = np.pi/2 * np.abs(np.sin(2 * np.pi * f_shoulder * time))
+        angle_y_shoulder = angle_x_shoulder / 2
+        angle_x_elbow = np.pi * np.abs(np.sin(2 * np.pi * f_elbow * time))
+        angle_y_lower_arm = angle_x_elbow / 2
+
+        plot_df = df(
+            {
+                "Time": time,
+                "Shoulder X Angle": angle_x_shoulder,
+                "Shoulder Y Angle": angle_y_shoulder,
+                "Elbow X Angle": angle_x_elbow,
+                "Lower Arm Y Angle": angle_y_lower_arm,
+            }
+        )
+        plot_fig = px.line(
+            plot_df,
+            x="Time",
+            y=[
+                "Shoulder X Angle",
+                "Shoulder Y Angle",
+                "Elbow X Angle",
+                "Lower Arm Y Angle",
+            ],
+        )
         
         components.html(
             f"""
@@ -69,6 +96,7 @@ class Main:
             const cubeBufferInfo = twgl.primitives.createCubeBufferInfo(gl, 1);
             const sphereBufferInfo = twgl.primitives.createSphereBufferInfo(gl,sphereRad,200,200);
             const cylinderBufferInfo = twgl.primitives.createCylinderBufferInfo(gl,sphereRad/2,{l1}+2*sphereRad,200,200);
+            const cylinder2BufferInfo = twgl.primitives.createCylinderBufferInfo(gl,sphereRad/10,(2*sphereRad),200,200);
             const truncatCylinderBufferInfo = twgl.primitives.createTruncatedConeBufferInfo(gl,sphereRad/3,sphereRad/2,{l2}+2*sphereRad,200,200); 
             
             r = {camera_radius};
@@ -87,13 +115,13 @@ class Main:
             
             function render(time) {{
             time *= 0.001;
-            
-            
-            console.log(theta_camera);
             f_shoulder = 0.25;
+            f_elbow = 0.25;
             
-            rotate_shoulder_x = 2*Math.abs(Math.sin(2*Math.PI*f_shoulder*time));
-            rotate_shoulder_y = 1*Math.abs(Math.sin(2*Math.PI*f_shoulder*time));
+            rotate_shoulder_x = Math.PI/2*Math.abs(Math.sin(2*Math.PI*f_shoulder*time));
+            rotate_shoulder_y = rotate_shoulder_x/2;
+            rotate_elbow_x = Math.PI*Math.abs(Math.sin(2*Math.PI*f_elbow*time));
+            rotate_lower_arm = rotate_elbow_x/2;
             
             twgl.resizeCanvasToDisplaySize(gl.canvas);
             gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
@@ -142,22 +170,23 @@ class Main:
                     {{
                         // Lower Arm
                         m = m4.translate(m, [0, -({l2/2}+sphereRad), 0]);
+                        m = m4.rotateY(m, rotate_lower_arm);
                         drawCone(projection, view, m);
                         pushMatrix(m);
                         {{
-                            //Hand
+                            //Hand and thumb
                             m = m4.translate(m, [0, -({l2/2}+sphereRad), 0]);
                             drawSphere(projection, view, m);
+                            m = m4.rotateZ(m, 90);
+                            m = m4.translate(m,[0,-5,0]);
+                            drawCylinder2(projection, view, m);
                             pushMatrix(m);
                         }}
                     }}
                     }}
                     
                 }}
-            
-                
-            
-                
+              
             }}
             
             m = popMatrix();
@@ -211,8 +240,24 @@ class Main:
                 u_view: view,
                 u_model: model,
             }});
+            
           
             twgl.drawBufferInfo(gl, cylinderBufferInfo);
+            }}
+            
+            function drawCylinder2(projection, view, model) {{
+            twgl.setBuffersAndAttributes(gl, programInfo, cylinder2BufferInfo);
+        
+            twgl.setUniforms(programInfo, {{
+                u_color: color,
+                u_lightDir: lightDir,
+                u_projection: projection,
+                u_view: view,
+                u_model: model,
+            }});
+            
+          
+            twgl.drawBufferInfo(gl, cylinder2BufferInfo);
             }}
             
             function drawCone(projection, view, model) {{
@@ -229,14 +274,14 @@ class Main:
             twgl.drawBufferInfo(gl, truncatCylinderBufferInfo);
             }}
             
-            
             </script>
             
             """,
-            width = 640,
-            height = 640
+            width=640,
+            height=640,
         )
-        
+        st.plotly_chart(plot_fig)
+
     def unuse(self):
         with st.expander("3D Motion Equation"):
             st.markdown("# 3D Motion Equation")
@@ -767,39 +812,47 @@ class Main:
         theta_2 = c2.number_input("Lower Arm Angle Theta (deg)", value=0)
         phi_1 = c3.number_input("Upper Arm Angular Phi (deg)", value=0)
         phi_2 = c4.number_input("Lower Arm Angular Phi (deg)", value=0)
-        
+
         theta_1_dot = c1.number_input("Upper Arm Angle Theta Velocity (deg/s)", value=0)
         theta_2_dot = c2.number_input("Lower Arm Angle Theta Velocity (deg/s)", value=0)
         phi_1_dot = c3.number_input("Upper Arm Angular Phi Velocity (deg/s)", value=0)
         phi_2_dot = c4.number_input("Lower Arm Angular Phi Velocity (deg/s)", value=0)
-        
-        theta_1_dot_dot = c1.number_input("Upper Arm Angle Theta Acceleration (deg/s^2)", value=0)
-        theta_2_dot_dot = c2.number_input("Lower Arm Angle Theta Acceleration (deg/s^2)", value=0)
-        phi_1_dot_dot = c3.number_input("Upper Arm Angular Phi Acceleration (deg/s^2)", value=0)
-        phi_2_dot_dot = c4.number_input("Lower Arm Angular Phi Acceleration (deg/s^2)", value=0)
-        
+
+        theta_1_dot_dot = c1.number_input(
+            "Upper Arm Angle Theta Acceleration (deg/s^2)", value=0
+        )
+        theta_2_dot_dot = c2.number_input(
+            "Lower Arm Angle Theta Acceleration (deg/s^2)", value=0
+        )
+        phi_1_dot_dot = c3.number_input(
+            "Upper Arm Angular Phi Acceleration (deg/s^2)", value=0
+        )
+        phi_2_dot_dot = c4.number_input(
+            "Lower Arm Angular Phi Acceleration (deg/s^2)", value=0
+        )
+
         tau_theta_1 = c1.number_input("Upper Arm Theta Torque (Nm)", value=0)
         tau_theta_2 = c2.number_input("Lower Arm Theta Torque (Nm)", value=0)
         tau_phi_1 = c3.number_input("Upper Arm Phi Torque (Nm)", value=0)
         tau_phi_2 = c4.number_input("Lower Arm Phi Torque (Nm)", value=0)
-        
+
         simulation_input = {
             "H": H,
             "M": M,
             "dt": dt,
             "duration": duration,
-            "theta_1":theta_1,
-            "theta_2":theta_2,
-            "phi_1":phi_1,
-            "phi_2":phi_2,
-            "theta_1_dot":theta_1_dot,
-            "theta_2_dot":theta_2_dot,
-            "phi_1_dot":phi_1_dot,
-            "phi_2_dot":phi_2_dot,
-            "theta_1_dot_dot":theta_1_dot_dot,
-            "theta_2_dot_dot":theta_2_dot_dot,
-            "phi_1_dot_dot":phi_1_dot_dot,
-            "phi_2_dot_dot":phi_2_dot_dot,
+            "theta_1": theta_1,
+            "theta_2": theta_2,
+            "phi_1": phi_1,
+            "phi_2": phi_2,
+            "theta_1_dot": theta_1_dot,
+            "theta_2_dot": theta_2_dot,
+            "phi_1_dot": phi_1_dot,
+            "phi_2_dot": phi_2_dot,
+            "theta_1_dot_dot": theta_1_dot_dot,
+            "theta_2_dot_dot": theta_2_dot_dot,
+            "phi_1_dot_dot": phi_1_dot_dot,
+            "phi_2_dot_dot": phi_2_dot_dot,
             "tau_theta_1": tau_theta_1,
             "tau_theta_2": tau_theta_2,
             "tau_phi_1": tau_phi_1,
@@ -813,5 +866,7 @@ class Main:
             motion_simulation.plot()
         if debug:
             st.write(motion_simulation.info())
+
+
 if __name__ == "__main__":
     Main().main()

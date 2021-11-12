@@ -408,6 +408,3 @@ class Simulation(SimulationUtils):
     def plot(self):
         st.plotly_chart(self.dynamic_array)
 
-
-class WebGL:
-    pass
