@@ -1,0 +1,175 @@
+\begin{aligned}
+    \frac{d}{dt} \frac{\partial L}{\partial \dot{\alpha}}-\frac{\partial L}{\partial \alpha}       & =\tau                                                                                                                                                                                                                                                                  \\
+    \\
+    \frac{\partial L}{\partial \theta_1}                                                           & =\frac{1}{2}(2m_1l_{1p}^2\dot{\varphi_1}^{2}sin{\theta_1}cos{\theta_1}                                                                                                                                                                                                 \\
+                                                                                                   & \qquad +m_2(2l_{1}^2\dot{\varphi_1}^{2}sin{\theta_1}cos{\theta_1}                                                                                                                                                                                                      \\
+                                                                                                   & \quad\qquad\qquad+2l_{1}l_{2p}(\dot{\theta_2}cos{\theta_2}(-\dot{\theta_1}sin{\theta_1}cos{(\varphi_1-\varphi_2)}-\dot{\varphi_1}cos{\theta_1}sin{(\varphi_1-\varphi_2)})                                                                                              \\
+                                                                                                   & \qquad\qquad\qquad\qquad+\dot{\varphi_2}sin{\theta_2}(-\dot{\theta_1}sin{\theta_1}sin{(\varphi_1-\varphi_2)}+\dot{\varphi_1}cos{\theta_1}cos{(\varphi_1-\varphi_2)})                                                                                                   \\
+                                                                                                   & \qquad\qquad\qquad\qquad+\dot{\theta_1}\dot{\theta_2}cos{\theta_1}sin{\theta_2}))                                                                                                                                                                                      \\
+                                                                                                   & \quad -g(m_{1}l_{1p}sin{\theta_1}+m_{2}(l_1sin{\theta_1})                                                                                                                                                                                                              \\
+  
+  
+  
+  
+    \\\frac{\partial L}{\partial \dot{\theta_1}}&=\frac{1}{2}(2m_1l_{1p}^2\dot{\theta_1}
+    +m_2(2l_{1}^2\dot{\theta_1}
+    +2l_{1}l_{2p}(\dot{\theta_2}cos{\theta_2}(cos{\theta_1}cos{(\varphi_1-\varphi_2)})\\
+                                                                                                   & \qquad\qquad\qquad\qquad\qquad\qquad\qquad+\dot{\varphi_2}sin{\theta_2}(cos{\theta_1}sin{(\varphi_1-\varphi_2)})                                                                                                                                                       \\
+                                                                                                   & \qquad\qquad\qquad\qquad\qquad\qquad\qquad+\dot{\theta_2}sin{\theta_1}sin{\theta_2}))                                                                                                                                                                                  \\
+                                                                                                   & \qquad +2I_{1}\dot{\theta_1})                                                                                                                                                                                                                                          \\
+  
+  
+  
+    \\
+  
+  
+  
+  
+    \frac{d}{dt} \frac{\partial L}{\partial \dot{\theta_1}}                                        & =\frac{1}{2}(2m_1l_{1p}^2\ddot{\theta_1}                                                                                                                                                                                                                               \\
+                                                                                                   & \qquad + m_2(2l_{1}^2\ddot{\theta_1}                                                                                                                                                                                                                                   \\
+                                                                                                   & \qquad\qquad+2l_{1}l_{2p}(((\ddot{\theta_2}cos{\theta_2}-\dot{\theta_2}sin{\theta_2})(cos{\theta_1}cos{(\varphi_1-\varphi_2)})+\dot{\theta_2}cos{\theta_2}(-sin{\theta_1}cos{(\varphi_1-\varphi_2)}))                                                                  \\
+                                                                                                   & \quad\qquad\qquad\qquad+(\ddot{\varphi_2}sin{\theta_2}+\dot{\varphi_2}cos{\theta_2})(cos{\theta_1}sin{(\varphi_1-\varphi_2)})+\dot{\varphi_2}sin{\theta_2}(-sin{\theta_1}sin{(\varphi_1-\varphi_2)})                                                                   \\
+                                                                                                   & \quad\qquad\qquad\qquad+\ddot{\theta_2}sin{\theta_1}sin{\theta_2}+\dot{\theta_2}(cos{\theta_1}sin{\theta_2}+sin{\theta_1}cos{\theta_2})))                                                                                                                              \\
+                                                                                                   & \qquad +2I_{1}\ddot{\theta_1})                                                                                                                                                                                                                                         \\
+    \\
+  
+    \\
+    \frac{d}{dt} \frac{\partial L}{\partial \dot{\theta_1}}-\frac{\partial L}{\partial \theta_1}   & =
+    \ddot{\theta_1}(m_1l_{1p}^{2}+m_2l_1^{2}+I_1)\\
+                                                                                                   & +\ddot{\theta_2}(m_2l_1l2p(cos{\theta_1}cos{\theta_2}cos{(\varphi_1-\varphi_2)}+sin{\theta_1}sin{\theta_2}))                                                                                                                                                           \\
+                                                                                                   & +\dot{\theta_2}(m_2l_1l2p(sin{(\theta_1+\theta_2)}(1-cos{(\varphi_1-\varphi_2)})+\dot{\theta_1}sin{\theta_1}cos{\theta_2}cos{(\varphi_1-\varphi_2)}+\dot{\varphi_1}cos{\theta_1}cos{\theta_2}sin{(\varphi_1-\varphi_2)}-\dot{\theta_1}cos{\theta_1}sin{\theta_2}))     \\
+                                                                                                   & +\ddot{\varphi_2}(m_2l_1l2pcos{\theta_1}sin{\theta_2}sin{(\varphi_1-\varphi_2)})                                                                                                                                                                                       \\
+                                                                                                   & -\dot{\varphi_1}^{2}(sin{\theta_1}cos{\theta_1}(m_1l_{1p}^{2}+m_2l_1^{2}))                                                                                                                                                                                             \\
+                                                                                                   & +\dot{\varphi_2}(m_2l_1l2p(cos{(\theta_1+\theta_2)}sin{(\varphi_1-\varphi_2)}+\dot{\theta_1}sin{\theta_1}sin{\theta_2}sin{(\varphi_1-\varphi_2)}-\dot{\varphi_1}cos{\theta_1}sin{\theta_2}cos{(\varphi_1-\varphi_2)}))                                                 \\
+                                                                                                   & +g(m_{1}l_{1p}sin{\theta_1}+m_{2}l_1sin{\theta_1})
+  
+    \\\\\\
+    \frac{\partial L}{\partial \theta_2}                                                           & =\frac{1}{2}(
+    m_2(l_{2p}^{2}\varphi_{2}^{2}sin{\theta_2}cos{\theta_2}\\
+                                                                                                   & \qquad\qquad+2l_{1}l_{2p}(-\dot{\theta_2}sin{\theta_2}(\dot{\theta_1}cos{\theta_1}cos{(\varphi_1-\varphi_2)}-\dot{\varphi_1}sin{\theta_1}sin{(\varphi_1-\varphi_2)})                                                                                                   \\
+                                                                                                   & \qquad\qquad\qquad\qquad+\dot{\varphi_2}cos{\theta_2}(\dot{\theta_1}cos{\theta_1}sin{(\varphi_1-\varphi_2)}+\dot{\varphi_1}sin{\theta_1}cos{(\varphi_1-\varphi_2)})                                                                                                    \\
+                                                                                                   & \qquad\qquad\qquad\qquad+\dot{\theta_1}\dot{\theta_2}sin{\theta_1}cos{\theta_2}))                                                                                                                                                                                      \\
+                                                                                                   & \quad -g(m_{2}(l_{2p}sin{\theta_2}))                                                                                                                                                                                                                                   \\
+    \\
+  
+  
+  
+    \frac{\partial L}{\partial \dot{\theta_2}}                                                     & =\frac{1}{2}(
+    m_2(2l_{2p}^2\dot{\theta_2}
+    +2l_{1}l_{2p}(cos{\theta_2}(\dot{\theta_1}cos{\theta_1}cos{(\varphi_1-\varphi_2)}-\dot{\varphi_1}sin{\theta_1}sin{(\varphi_1-\varphi_2)})\\
+                                                                                                   & \qquad\qquad\qquad\qquad\qquad+\dot{\theta_1}sin{\theta_1}sin{\theta_2}))                                                                                                                                                                                              \\
+                                                                                                   & \qquad +2I_{2}\dot{\theta_2})                                                                                                                                                                                                                                          \\
+  
+    \\
+  
+  
+  
+    \frac{d}{dt} \frac{\partial L}{\partial \dot{\theta_2}}                                        & =\frac{1}{2}(
+    m_2(2l_{2p}^2\ddot{\theta_2}
+    +2l_{1}l_{2p}(-sin{\theta_2}(\dot{\theta_1}cos{\theta_1}cos{(\varphi_1-\varphi_2)}-\dot{\varphi_1}sin{\theta_1}sin{(\varphi_1-\varphi_2)})\\
+                                                                                                   & \qquad\qquad\qquad\qquad\qquad+cos{\theta_2}((\ddot{\theta_1}cos{\theta_1}-\dot{\theta_1}sin{\theta_1})cos{(\varphi_1-\varphi_2)}                                                                                                                                      \\
+                                                                                                   & \qquad\qquad\qquad\qquad\qquad\qquad\quad-(\ddot{\varphi_1}sin{\theta_1}+\dot{\varphi_1}cos{\theta_1})sin{(\varphi_1-\varphi_2)})                                                                                                                                      \\
+                                                                                                   & \qquad\qquad\qquad\qquad\qquad+\ddot{\theta_1}sin{\theta_1}sin{\theta_2}+\dot{\theta_1}(cos{\theta_1}sin{\theta_2}+sin{\theta_1}cos{\theta_2})))                                                                                                                       \\
+                                                                                                   & \qquad +2I_{2}\ddot{\theta_2})                                                                                                                                                                                                                                         \\\\
+  
+    \\
+  
+    \frac{d}{dt} \frac{\partial L}{\partial \dot{\theta_2}}-\frac{\partial L}{\partial \theta_2}   & =
+    \ddot{\theta_2}(m_2l_{2p}^{2}+I_2)\\
+                                                                                                   & + \ddot{\theta_1}(m_2l_1l_{2p}(cos{\theta_1}cos{\theta_2}cos{(\varphi_1-\varphi_2)}+sin{\theta_1}sin{\theta_2}))                                                                                                                                                       \\
+                                                                                                   & + \dot{\theta_1}(m_2l_1l_{2p}(sin{(\theta_1+\theta_2)}(1-cos{(\varphi_1-\varphi_2)})+\dot{\theta_2}sin{\theta_2}cos{\theta_1}cos{(\varphi_1-\varphi_2)}-\dot{\varphi_2}cos{\theta_1}cos{\theta_2}sin{(\varphi_1-\varphi_2)}-\dot{\theta_2}sin{\theta_1}cos{\theta_2})) \\
+                                                                                                   & - \dot{\theta_2}(m_2l_1l_{2p}sin{\theta_1}sin{\theta_2}sin{(\varphi_1-\varphi_2)})                                                                                                                                                                                     \\
+                                                                                                   & + \ddot{\varphi_1}(-sin{\theta_1}cos{\theta_2}sin{(\varphi_1-\varphi_2)})                                                                                                                                                                                              \\
+                                                                                                   & + \dot{\varphi_2}(-cos{(\theta_1+\theta_2)}sin{(\varphi_1-\varphi_2)}-m_2l_1l_{2p}\dot{\varphi_1}sin{\theta_1}cos{\theta_2}cos{(\varphi_1-\varphi_2)})                                                                                                                 \\
+                                                                                                   & + m_2l_{2p}sin{\theta_2}(g-\frac{1}{2}l_{2p}\varphi_{2}^{2}cos{\theta_2})
+  
+    \\\\\\
+  
+  
+    \\
+    \frac{\partial L}{\partial \varphi_1}                                                          & =\frac{1}{2}(
+    m_2(2l_{1}l_{2p}(\dot{\theta_2}cos{\theta_2}(-\dot{\theta_1}cos{\theta_1}sin{(\varphi_1-\varphi_2)}-\dot{\varphi_1}sin{\theta_1}cos{(\varphi_1-\varphi_2)})\\
+                                                                                                   & \qquad\qquad\qquad+\dot{\varphi_2}sin{\theta_2}(\dot{\theta_1}cos{\theta_1}cos{(\varphi_1-\varphi_2)}-\dot{\varphi_1}sin{\theta_1}sin{(\varphi_1-\varphi_2)})                                                                                                          \\
+                                                                                                   & \qquad\qquad)                                                                                                                                                                                                                                                          \\
+                                                                                                   & \qquad )                                                                                                                                                                                                                                                               \\
+    \\
+    \\
+  
+  
+  
+  
+    \frac{\partial L}{\partial \dot{\varphi_1}}                                                    & =\frac{1}{2}(2m_1l_{1p}^2\dot{\varphi_1}sin^2{\theta_1}
+    +m_2(2l_{1}^2\dot{\varphi_1}sin^{2}{\theta_1}
+    +2l_{1}l_{2p}(\dot{\theta_2}cos{\theta_2}(-sin{\theta_1}sin{(\varphi_1-\varphi_2)})\\
+                                                                                                   & \qquad\qquad\qquad\qquad\qquad\qquad\qquad\qquad\qquad\qquad+\dot{\varphi_2}sin{\theta_2}(sin{\theta_1}cos{(\varphi_1-\varphi_2)})                                                                                                                                     \\
+                                                                                                   & \qquad\qquad\qquad\qquad\qquad\qquad)                                                                                                                                                                                                                                  \\
+                                                                                                   & \qquad)                                                                                                                                                                                                                                                                \\
+  
+    \\
+  
+  
+  
+  
+  
+    \frac{d}{dt} \frac{\partial L}{\partial \dot{\varphi_1}}                                       & =\frac{1}{2}(2m_1l_{1p}^2(\ddot{\varphi_1}sin^2{\theta_1}+2\dot{\varphi_1}sin{\theta_1}cos{\theta_1})                                                                                                                                                                  \\
+                                                                                                   & \qquad +m_2(2l_{1}^2(\ddot{\varphi_1}sin^2{\theta_1}+2\dot{\varphi_1}sin{\theta_1}cos{\theta_1})                                                                                                                                                                       \\
+                                                                                                   & \quad\qquad\qquad+2l_{1}l_{2p}((\ddot{\theta_2}cos{\theta_2}-\dot{\theta_2}sin{\theta_2})(-sin{\theta_1}sin{(\varphi_1-\varphi_2)})+\dot{\theta_2}cos{\theta_2}(-cos{\theta_1}sin{(\varphi_1-\varphi_2)})                                                              \\
+                                                                                                   & \qquad\qquad\qquad\qquad+(\ddot{\varphi_2}sin{\theta_2}+\dot{\varphi_2}cos{\theta_2})(sin{\theta_1}cos{(\varphi_1-\varphi_2)})+\dot{\varphi_2}sin{\theta_2}(cos{\theta_1}cos{(\varphi_1-\varphi_2)})                                                                   \\
+                                                                                                   & \qquad\qquad\quad)                                                                                                                                                                                                                                                     \\
+                                                                                                   & \qquad)                                                                                                                                                                                                                                                                \\\\
+  
+    \frac{d}{dt} \frac{\partial L}{\partial \dot{\varphi_1}}-\frac{\partial L}{\partial \varphi_1} & =
+    \ddot{\theta_2}(-m_{2}l_{1}l_{2p}cos{\theta_2}sin{\theta_1}sin{(\varphi_1-\varphi_2)})\\
+                                                                                                   & + \dot{\theta_2}(m_{2}l_{1}l_{2p}(-cos{(\theta_1-\theta_2)}sin{(\varphi_1-\varphi_2)}+\dot{\theta_1}cos{\theta_1}cos{\theta_2}sin{(\varphi_1-\varphi_2)}+\dot{\varphi_1}sin{\theta_1}cos{\theta_2}cos{(\varphi_1-\varphi_2)}))                                         \\
+                                                                                                   & + \ddot{\varphi_1}(m_1l_{1p}^{2}sin^{2}{\theta_1}+m_2l_1^2sin^2{\theta_1})                                                                                                                                                                                             \\
+                                                                                                   & + \dot{\varphi_1}(2m_1l_{1p}^{2}sin{\theta_1}cos{\theta_1}+2m_2l_{1}^{2}sin{\theta_1}cos{\theta_1})                                                                                                                                                                    \\
+                                                                                                   & + \ddot{\varphi_2}(m_2l_1l_{2p}sin{\theta_1}sin{\theta_2}cos{(\varphi_1-\varphi_2)})                                                                                                                                                                                   \\
+                                                                                                   & + \dot{\varphi_2}(m_2l_1l_{2p}(sin{(\theta_1+\theta_2)}cos{(\varphi_1-\varphi_2)}-\dot{\theta_1}cos{\theta_1}sin{\theta_2}cos{(\varphi_1-\varphi_2)}+\dot{\varphi_1}sin{\theta_1}sin{\theta_2}sin{(\varphi_1-\varphi_2)}))                                             \\
+  
+    \\\\\\
+  
+  
+    \\
+    \frac{\partial L}{\partial \varphi_2}                                                          & =\frac{1}{2}(
+    m_2(
+    2l_{1}l_{2p}(\dot{\theta_2}cos{\theta_2}(-\dot{\theta_1}cos{\theta_1}sin{(\varphi_2-\varphi_1)}+\dot{\varphi_1}sin{\theta_1}cos{(\varphi_2-\varphi_1)})\\
+                                                                                                   & \qquad\qquad\qquad+\dot{\varphi_2}sin{\theta_2}(-\dot{\theta_1}cos{\theta_1}cos{(\varphi_2-\varphi_1)}-\dot{\varphi_1}sin{\theta_1}sin{(\varphi_2-\varphi_1)})                                                                                                         \\
+                                                                                                   & \qquad\qquad\qquad\quad)                                                                                                                                                                                                                                               \\
+                                                                                                   & \qquad\qquad )                                                                                                                                                                                                                                                         \\
+                                                                                                   & \qquad)                                                                                                                                                                                                                                                                \\
+    \\
+  
+  
+  
+    \frac{\partial L}{\partial \dot{\varphi_2}}                                                    & =\frac{1}{2}(
+    m_2(2l_{2p}^2\dot{\varphi_2}sin^{2}{\theta_2}
+    +2l_{1}l_{2p}(
+    sin{\theta_2}(\dot{\theta_1}cos{\theta_1}sin{(\varphi_1-\varphi_2)}+\dot{\varphi_1}sin{\theta_1}cos{(\varphi_1-\varphi_2)})))\\
+  
+    \\
+  
+  
+  
+  
+  
+    \frac{d}{dt} \frac{\partial L}{\partial \dot{\varphi_2}}                                       & =\frac{1}{2}(
+    m_2(2l_{2p}^2(\ddot{\varphi_2}sin^{2}{\theta_2}+2\dot{\varphi_2}sin{\theta_2}cos{\theta_2})\\
+                                                                                                   & \qquad\qquad+2l_{1}l_{2p}(
+    cos{\theta_2}(\dot{\theta_1}cos{\theta_1}sin{(\varphi_1-\varphi_2)}+\dot{\varphi_1}sin{\theta_1}cos{(\varphi_1-\varphi_2)})\\
+                                                                                                   & \qquad\qquad\qquad\qquad +sin{\theta_2}((\ddot{\theta_1}cos{\theta_1}-\dot{\theta_1}sin{\theta_1})sin{(\varphi_1-\varphi_2)}                                                                                                                                           \\
+                                                                                                   & \qquad\qquad\qquad\qquad\qquad +(\ddot{\varphi_1}sin{\theta_1}+\dot{\varphi_1}cos{\theta_1})cos{(\varphi_1-\varphi_2)})                                                                                                                                                \\
+                                                                                                   & \qquad\qquad\qquad\qquad)                                                                                                                                                                                                                                              \\
+                                                                                                   & \qquad )                                                                                                                                                                                                                                                               \\\\
+  
+  
+  
+    \frac{d}{dt} \frac{\partial L}{\partial \dot{\varphi_2}}-\frac{\partial L}{\partial \varphi_2} & =\ddot{\theta_1}(m_2l_{1}l_{2p}cos{\theta_1}sin{\theta_2}sin{(\varphi_1-\varphi_2)})                                                                                                                                                                                   \\
+                                                                                                   & +\dot{\theta_1}(m_2l_{1}l_{2p}(cos{(\theta_1+\theta_2)}sin{(\varphi_1-\varphi_2)}+\dot{\theta_2}cos{\theta_1}cos{\theta_2}sin{(\varphi_2-\varphi_1)}+\dot{\varphi_2}cos{\theta_1}sin{\theta_2}cos{(\varphi_2-\varphi_1)}))                                             \\
+                                                                                                   & +\ddot{\varphi_1}(m_2l_1l_{2p}sin{\theta_1}sin{\theta_2}cos{(\varphi_1-\varphi_2)})                                                                                                                                                                                    \\
+                                                                                                   & +\dot{\varphi_1}(m_2l_1l_{2p}(sin{(\theta_1+\theta_2)}cos{(\varphi_1-\varphi_2)}+\dot{\varphi_2}sin{\theta_1}sin{\theta_2}sin{(\varphi_2-\varphi_1)}-\dot{\theta_2}sin{\theta_1}cos{\theta_2}cos(\varphi_2-\varphi_1){})                                               \\
+                                                                                                   & +\ddot{\varphi_2}(m_2l_{2p}^2sin^{2}{\theta_2})                                                                                                                                                                                                                        \\
+                                                                                                   & +\dot{\varphi_2}(2m_2l_{2p}^2sin{\theta_2}cos{\theta_2})                                                                                                                                                                                                               \\
+  
+  
+    \\\\\\
+  \end{aligned}
