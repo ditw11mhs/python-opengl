@@ -16,7 +16,7 @@ class Main:
         H = st.sidebar.number_input("Height", 0, 220, 160)
         l1 = 0.186 * H
         l2 = 0.146 * H
-
+        
         time = np.arange(0, 5, 0.001)
         f_shoulder = 0.25
         f_elbow = 0.25
@@ -45,6 +45,7 @@ class Main:
             ],
         )
         st.video("video1366604507.mp4")
+        self.sims()
         components.html(
             f"""
             <canvas id="canvas" width = "640" height = "640"></canvas>
@@ -281,8 +282,9 @@ class Main:
             height=640,
         )
         st.plotly_chart(plot_fig)
+        
 
-    def unuse(self):
+    def sims(self):
         with st.expander("3D Motion Equation"):
             st.markdown("# 3D Motion Equation")
             st.markdown(
@@ -791,13 +793,15 @@ class Main:
                     +\dot{\varphi_1}(m_2l_1l_{2p}(sin{(\theta_1+\theta_2)}cos{(\varphi_1-\varphi_2)}+\dot{\varphi_2}sin{\theta_1}sin{\theta_2}sin{(\varphi_2-\varphi_1)}-\dot{\theta_2}sin{\theta_1}cos{\theta_2}cos(\varphi_2-\varphi_1){})\\
                     +\dot{\varphi_2}(2m_2l_{2p}^2sin{\theta_2}cos{\theta_2})\\
                     \end{pmatrix}}{(m_2l_{2p}^2sin^{2}{\theta_2})}\\\\\\
-                    \frac{\partial^2 y}{\partial x^2}&= f(x,y,y')\\
-                    k_1&=\frac{h}{2}f(x,y,y')\\
-                    k_2&=\frac{h}{2}f\left( x+\frac{h}{2},y+\frac{h}{2}\left(y'+\frac{k1}{2}\right),y'+k_1\right)\\
-                    k_3&=\frac{h}{2}f\left( x+\frac{h}{2},y+\frac{h}{2}\left(y'+\frac{k1}{2}\right),y'+k_2\right)\\
-                    k_4&=\frac{h}{2}f\left( x+h,y+h\left(y'+k_3\right),y'+2k_3\right)\\
-                    y_n&=y_{n-1}+h\left(y'_{n-1}+\frac{k_1+k_2+k_3}{3}\right)\\
-                    y'_n&=y'_{n-1}+h\left(k_1+2k_2+2k_3+k_4\right)\\
+                    
+                    
+                    \ddot{\theta}&= f(t,\theta,\dot{\theta})\\
+                    k_1&=\frac{h}{2}f(t,\theta,\dot{\theta})\\
+                    k_2&=\frac{h}{2}f\left( t+\frac{h}{2},\theta+\frac{h}{2}\left(\dot{\theta}+\frac{k1}{2}\right),\dot{\theta}+k_1\right)\\
+                    k_3&=\frac{h}{2}f\left( t+\frac{h}{2},\theta+\frac{h}{2}\left(\dot{\theta}+\frac{k1}{2}\right),\dot{\theta}+k_2\right)\\
+                    k_4&=\frac{h}{2}f\left( t+h,\theta+h\left(\dot{\theta}+k_3\right),\dot{\theta}+2k_3\right)\\
+                    \theta_n&=\theta_{n-1}+h\left(\dot{\theta}_{n-1}+\frac{k_1+k_2+k_3}{3}\right)\\
+                    \dot{\theta}_n&=\dot{\theta}_{n-1}+h\left(k_1+2k_2+2k_3+k_4\right)\\
                     \end{aligned}
                     """
             )
